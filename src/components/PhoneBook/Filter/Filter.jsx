@@ -1,4 +1,5 @@
 import styles from './filter.module.css'
+import PropTypes from "prop-types"
 
 const Filter = ({ onChange }) => {
     return (
@@ -8,6 +9,13 @@ const Filter = ({ onChange }) => {
         </div>
     )
 
+}
+
+Filter.defaultProps = {
+    onChange: () => { },
+}
+Filter.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
 }
 
 export default Filter;
