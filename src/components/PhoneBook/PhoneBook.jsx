@@ -14,6 +14,13 @@ class PhoneBook extends Component {
         filter: ""
     }
 
+    componentDidMount(){
+        const phones = JSON.parse(localStorage.getItem("phones"));
+        if(phones){
+            this.setState({phones})
+        }
+    }
+
     handleChange = ({ target }) => {
         const { name, value } = target;
         this.setState({
@@ -39,16 +46,20 @@ class PhoneBook extends Component {
                 number,
                 id: nanoid()
             }
+            const upd = [...phones, newContact]
+            localStorage.setItem('phones', JSON.stringify(upd))
             return {
-                phones: [...phones, newContact]
+                phones: upd
             }
         });
     }
 
     removeContact = (id) => {
         this.setState(({ phones }) => {
+            const upd = phones.filter(item => item.id !== id)
+            localStorage.setItem('phones', JSON.stringify(upd))
             return {
-                phones: phones.filter(item => item.id !== id)
+                phones: upd
             }
         })
     }

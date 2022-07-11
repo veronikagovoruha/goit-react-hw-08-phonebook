@@ -15,7 +15,7 @@ Filter.defaultProps = {
     onChange: () => { },
 }
 Filter.propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
 }
 
 export default Filter;
