@@ -16,9 +16,13 @@ class PhoneBook extends Component {
 
     componentDidMount(){
         const phones = JSON.parse(localStorage.getItem("phones"));
-        if(phones){
+        if(phones && phones.length > 0){
             this.setState({phones})
         }
+    }
+
+    componentDidUpdate(){
+        localStorage.setItem('phones', JSON.stringify(this.state.phones))
     }
 
     handleChange = ({ target }) => {
@@ -46,20 +50,16 @@ class PhoneBook extends Component {
                 number,
                 id: nanoid()
             }
-            const upd = [...phones, newContact]
-            localStorage.setItem('phones', JSON.stringify(upd))
             return {
-                phones: upd
+                phones: [...phones, newContact]
             }
         });
     }
 
     removeContact = (id) => {
         this.setState(({ phones }) => {
-            const upd = phones.filter(item => item.id !== id)
-            localStorage.setItem('phones', JSON.stringify(upd))
             return {
-                phones: upd
+                phones: phones.filter(item => item.id !== id)
             }
         })
     }
