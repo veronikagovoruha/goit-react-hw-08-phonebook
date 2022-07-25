@@ -21,8 +21,10 @@ class PhoneBook extends Component {
         }
     }
 
-    componentDidUpdate(){
-        localStorage.setItem('phones', JSON.stringify(this.state.phones))
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.phones !== this.state.phones) {
+            localStorage.setItem('phones', JSON.stringify(this.state.phones))
+        }
     }
 
     handleChange = ({ target }) => {
