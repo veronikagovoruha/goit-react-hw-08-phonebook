@@ -1,8 +1,36 @@
 import { useState } from "react";
 import styles from './formAddContact.module.css'
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
-const FormAddContact = ({onSubmit}) => {
+import { useDispatch } from "react-redux/es/exports";
+import { useSelector } from "react-redux";
+import { useCallback } from "react";
+
+import { getPhones }  from "../../../redux/phones/phonesSelector";
+
+import {
+    addPhone,
+  } from "../../../redux/phones/phonesSlice";
+
+const FormAddContact = () => {
+    const phones = useSelector(getPhones);
+    const dispatch = useDispatch();
+
+    const onAddPhone = useCallback(
+        (obj) => {
+          const isInclude = phones.find(
+            ({ name }) => name.toLowerCase() === obj.name.toLowerCase()
+          );
+          if (!isInclude) {
+            dispatch(addPhone(obj));
+            return;
+          }
+          alert(`${isInclude.name} is already in contacts`);
+          return;
+        },
+        [phones, dispatch]
+      );
+
     const [form, setForm] = useState({
         name: "",
         number: ""
@@ -18,7 +46,7 @@ const FormAddContact = ({onSubmit}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ ...form });
+        onAddPhone({ ...form });
         setForm({
             name: "",
             number: ""
