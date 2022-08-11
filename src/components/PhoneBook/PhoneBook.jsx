@@ -1,96 +1,68 @@
-import { useState, useEffect, useRef } from "react";
-import { nanoid } from "nanoid";
+import { useDispatch } from "react-redux/es/exports";
+import { useSelector } from "react-redux";
+import { useCallback } from "react";
 
 import Section from "./Section";
 import FormAddContact from "./FormAddContact";
 import ContactList from "./ContactList";
-import Filter from "./Filter"
+import Filter from "./Filter";
+
+import {
+    add,
+    remove,
+  } from "../../redux/phones/phone-item/phones-reducer-slice";
+import getPhones from "../../redux/phones/phone-item/phones-selector";
+  
+import { change } from "../../redux/phones/phone-filter/phones-filter-reducer-slice";
+import { getFilteredItems } from "../../redux/phones/phone-filter/phones-filter-selector";
 
 import styles from './phoneBook.module.css'
 
 
 const PhoneBook = () => {
-    const [phones, setPhones] = useState([]);
-    const [filter, setFilter] = useState("");
+    const phones = useSelector(getPhones);
+    const filteredItems = useSelector(getFilteredItems);
+    const dispatch = useDispatch();
 
-    const firstRender = useRef(true);
-
-    useEffect(() => {
-        const phones = JSON.parse(localStorage.getItem("phones"));
-        if(phones && phones.length){
-            setPhones([...phones]);
-        }
-    }, []);
-
-    useEffect(() => {
-        function compare() {
-          const currentState = JSON.stringify(phones);
-          const localStorageState = localStorage.getItem("phones");
-          if (currentState === localStorageState) {
-            return true;
-          }
-          return false;
-        }
-    
-        if (!firstRender.current) {
-          if (!compare()) {
-            localStorage.setItem("phones", JSON.stringify(phones));
-          }
-        } else {
-          firstRender.current = false;
-        }
-      }, [phones]);
-
-    const addContact = ({ name, number }) => {
-        if (isExistingContact(name)) {
-            alert(`${name} is already in contacts`);
+    const onAddPhone = useCallback(
+        (obj) => {
+          const isInclude = phones.find(
+            ({ name }) => name.toLowerCase() === obj.name.toLowerCase()
+          );
+          if (!isInclude) {
+            dispatch(add(obj));
             return;
-        }
-        const newContact = {
-            name,
-            number,
-            id: nanoid()
-        };
-        setPhones(prevBooks => [...prevBooks, newContact]);
-    };
-
-    const removeContact = (id) => {
-        setPhones(prevBooks => prevBooks.filter(item => item.id !== id))
-    }
-
-    const isExistingContact = (contactName) => {
-            return phones.some(({ name }) => {
-                return contactName.toLowerCase() === name.toLowerCase();
-            })
-    };
-
-    const getFilteredContact = () => {
-        if (!filter) {
-            return phones;
-        }
-        const filterValue = filter.toLowerCase();
-        const filterPhone = phones.filter(({ name }) => {
-            const nameValue = name.toLowerCase();
-            return nameValue.includes(filterValue);
-        });
-
-        return filterPhone;
-    };
-
-    const handleFilter = ({target}) => setFilter(target.value)
-
-    const filterPhones = getFilteredContact()
-
+          }
+          alert(`${isInclude.name} is already in contacts`);
+          return;
+        },
+        [phones, dispatch]
+      );
+    
+      const onRemovePhone = useCallback(
+        (id) => {
+          dispatch(remove(id));
+        },
+        [dispatch]
+      );
+    
+      const changeFilterState = useCallback(
+        ({ target: { value } }) => {
+          dispatch(change(value.trim()));
+        },
+        [dispatch]
+      );
 
         return (
             <div className={styles.phoneBook} >
                 <Section title="Phonebook">
-                    <FormAddContact onSubmit={addContact} />
+                    <FormAddContact onSubmit={onAddPhone} />
                 </Section>
 
                 <Section title="Contacts">
-                    <Filter onChange={handleFilter} value={filter}/>
-                    <ContactList filterPhones={filterPhones} removeContact={removeContact} />
+                    <Filter onChange={changeFilterState} />
+                    
+                    <ContactList phones={filteredItems} removeContact={onRemovePhone}/>
                 </Section>
 
             </div>

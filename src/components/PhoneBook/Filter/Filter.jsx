@@ -1,11 +1,11 @@
 import styles from './filter.module.css'
 import PropTypes from "prop-types"
 
-const Filter = ({ onChange, value }) => {
+const Filter = ({ onChange }) => {
     return (
         <div>
             <p>Find contacts by name</p>
-            <input className={styles.input} value={value} onChange={onChange} name="filter" type="text" />
+            <input className={styles.input} onChange={onChange} name="filter" type="text" />
         </div>
     )
 

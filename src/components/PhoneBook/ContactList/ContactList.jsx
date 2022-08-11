@@ -1,8 +1,8 @@
 import styles from './contact.module.css'
 import PropTypes from "prop-types"
 
-const ContactList = ({ filterPhones, removeContact }) => {
-    const elem = filterPhones.map(({ id, name, number }) => {
+const ContactList = ({ phones, removeContact }) => {
+    const elem = phones.map(({ id, name, number }) => {
         return (<li key={id} className={styles.item}>
             {name}: {number}
             <button className={styles.button} onClick={() => removeContact(id)}>Delete</button>
