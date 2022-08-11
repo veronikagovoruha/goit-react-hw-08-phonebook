@@ -8,13 +8,12 @@ import ContactList from "./ContactList";
 import Filter from "./Filter";
 
 import {
-    add,
-    remove,
-  } from "../../redux/phones/phone-item/phones-reducer-slice";
-import getPhones from "../../redux/phones/phone-item/phones-selector";
+    addPhone,
+    removePhone,
+  } from "../../redux/phones/phonesSlice";
+import { getPhones, getFilteredItems }  from "../../redux/phones/phonesSelector";
   
-import { change } from "../../redux/phones/phone-filter/phones-filter-reducer-slice";
-import { getFilteredItems } from "../../redux/phones/phone-filter/phones-filter-selector";
+import { changeFilter } from "../../redux/phones/phonesSlice";
 
 import styles from './phoneBook.module.css'
 
@@ -30,7 +29,7 @@ const PhoneBook = () => {
             ({ name }) => name.toLowerCase() === obj.name.toLowerCase()
           );
           if (!isInclude) {
-            dispatch(add(obj));
+            dispatch(addPhone(obj));
             return;
           }
           alert(`${isInclude.name} is already in contacts`);
@@ -41,14 +40,14 @@ const PhoneBook = () => {
     
       const onRemovePhone = useCallback(
         (id) => {
-          dispatch(remove(id));
+          dispatch(removePhone(id));
         },
         [dispatch]
       );
     
       const changeFilterState = useCallback(
         ({ target: { value } }) => {
-          dispatch(change(value.trim()));
+          dispatch(changeFilter(value.trim()));
         },
         [dispatch]
       );

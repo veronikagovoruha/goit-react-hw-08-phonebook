@@ -1,3 +1,7 @@
+export const getPhones = ({phones}) => {
+    return phones.items;
+};
+
 export const getFilteredItems = ({ phones: { filter, items } }) => {
   if (!filter) {
     return items;
