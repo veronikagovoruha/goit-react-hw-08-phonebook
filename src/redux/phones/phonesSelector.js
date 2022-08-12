@@ -12,3 +12,7 @@ export const getFilteredItems = ({ phones: { filter, items } }) => {
   });
   return newItems;
 };
+
+export const getFilterValue = ({ phones: { filter } }) => {
+  return filter;
+};
