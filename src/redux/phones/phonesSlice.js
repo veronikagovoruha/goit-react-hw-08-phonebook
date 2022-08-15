@@ -1,16 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { nanoid } from "@reduxjs/toolkit";
 
-const getPhones = () => {
-  return JSON.parse(localStorage.getItem("phones"));
-}
-
-const savePhones = (items) => {
-  localStorage.setItem("phones", JSON.stringify(items));
-}
+import {fetchPhones, addPhone, removePhones} from "./phonesOperation"
 
 const initState = {
-  items: getPhones() || [],
+  items: [],
+  loading: false,
+  error: null,
   filter: ""
 }
 
@@ -18,32 +13,43 @@ const phonesSlice = createSlice({
   name: "contacts",
   initialState: initState,
   reducers: {
-    addPhone: {
-      reducer({items}, { payload }) {
-        items.push(payload);
-        savePhones(items);
-      },
-      prepare(data) {
-        return {
-          payload: { ...data, id: nanoid() },
-        };
-      },
-    },
-    removePhone: (state, { payload }) => {
-      const items = [...state.items.filter((el) => el.id !== payload)];
-      savePhones(items);
-      return {
-        ...state,
-        items
-      }
-    },
     changeFilter: (store, { payload }) => ({
       ...store,
       filter: payload
     }),
   },
+  extraReducers: {
+    [fetchPhones.pending]: (store) => {
+      return {...store, loading: true, error: null}
+    },
+    [fetchPhones.fulfilled]: (store, {payload}) => {
+      store.items = payload;
+      store.loading = false;
+    },
+    [fetchPhones.rejected]: (store, {payload}) => ({...store, loading: false, error: payload}),
+
+    [addPhone.pending]:(store) => ({...store, loading: true, error: null}),
+    [addPhone.fulfilled]: (store, {payload}) => {
+      store.items.push(payload);
+      store.loading = false;
+    },
+    [addPhone.rejected]: (store, {payload}) => ({...store, loading: false, error: payload}),
+
+    [removePhones.pending]: (store) => {
+      store.loading = true;
+      store.error = null;
+    },
+    [removePhones.fulfilled]: (store, {payload}) => {
+      store.items = store.items.filter(item => item.id !== payload.id);
+      store.loading = false;
+    },
+    [removePhones.rejected]: (store, {payload}) => {
+      store.loading = false;
+      store.error = payload;
+    }, 
+  }
 });
 
-export const { addPhone, removePhone, changeFilter } = phonesSlice.actions;
+export const { changeFilter } = phonesSlice.actions;
 
 export default phonesSlice.reducer;

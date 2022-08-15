@@ -5,16 +5,15 @@ import { useCallback } from "react";
 import { useDispatch } from "react-redux/es/exports";
 
 import {
-    removePhone,
-  } from "../../../redux/phones/phonesSlice";
+    removePhones,
+  } from "../../../redux/phones/phonesOperation";
 
 const ContactList = ({ phones }) => {
     const dispatch = useDispatch();
-
     
       const onRemovePhone = useCallback(
         (id) => {
-          dispatch(removePhone(id));
+          dispatch(removePhones(id));
         },
         [dispatch]
       );
@@ -44,7 +43,7 @@ ContactList.propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
-            number: PropTypes.string.isRequired,
+            phone: PropTypes.string.isRequired,
         })
     ),
 };

@@ -10,7 +10,7 @@ import { getPhones }  from "../../../redux/phones/phonesSelector";
 
 import {
     addPhone,
-  } from "../../../redux/phones/phonesSlice";
+  } from "../../../redux/phones/phonesOperation";
 
 const FormAddContact = () => {
     const phones = useSelector(getPhones);
