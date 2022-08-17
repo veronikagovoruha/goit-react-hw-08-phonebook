@@ -3,11 +3,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchPhones = createAsyncThunk(
     "contacts",
-    async(_, thunkApi) => {
+    async(_, {rejectWithValue}) => {
         try {
             return await api.getPhones();
         } catch (error) {
-            return thunkApi.rejectWithValue(error);
+            const {data, status} = error.response;
+            return rejectWithValue({data, status});
         }
     }
 )
@@ -18,7 +19,8 @@ export const addPhone = createAsyncThunk(
         try {
             return await api.addPhone(data);
         } catch (error) {
-            return rejectWithValue(error);
+            const {data, status} = error.response;
+            return rejectWithValue({data, status});
         }
     },
     {
@@ -38,9 +40,11 @@ export const removePhones = createAsyncThunk(
     "phones/remove",
     async(id, {rejectWithValue}) => {
         try {
-            return await api.removePhones(id);
+            await api.removePhones(id);
+            return id;
         } catch (error) {
-            return rejectWithValue(error);
+            const {data, status} = error.response;
+            return rejectWithValue({data, status});
         }
     }
 )

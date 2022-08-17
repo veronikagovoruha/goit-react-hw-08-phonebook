@@ -1,10 +1,23 @@
-import { Component } from 'react';
-import PhoneBook from './components/PhoneBook'
+import Header from 'components/Header';
+import UserRoutes from "./UserRoutes";
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-export default class App extends Component{
-    render(){
+import { getCurrent } from 'redux/auth/auth-operations';
+
+const App = () =>  {
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        dispatch(getCurrent());
+    }, [])
+
         return (
-            <PhoneBook/>
+            <div>
+                <Header />
+                <UserRoutes />
+            </div>
+
         )
-    }
 }
+
+export default  App

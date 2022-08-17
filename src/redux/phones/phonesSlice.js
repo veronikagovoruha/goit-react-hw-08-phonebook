@@ -26,21 +26,27 @@ const phonesSlice = createSlice({
       store.items = payload;
       store.loading = false;
     },
-    [fetchPhones.rejected]: (store, {payload}) => ({...store, loading: false, error: payload}),
+    [fetchPhones.rejected]: (store, {payload}) => {
+      store.loading = false;
+      store.error = payload;
+    },
 
     [addPhone.pending]:(store) => ({...store, loading: true, error: null}),
     [addPhone.fulfilled]: (store, {payload}) => {
       store.items.push(payload);
       store.loading = false;
     },
-    [addPhone.rejected]: (store, {payload}) => ({...store, loading: false, error: payload}),
+    [addPhone.rejected]: (store, {payload}) => {
+      store.loading = false;
+      store.error = payload;
+    },
 
     [removePhones.pending]: (store) => {
       store.loading = true;
       store.error = null;
     },
     [removePhones.fulfilled]: (store, {payload}) => {
-      store.items = store.items.filter(item => item.id !== payload.id);
+      store.items = store.items.filter(item => item.id !== payload);
       store.loading = false;
     },
     [removePhones.rejected]: (store, {payload}) => {
